@@ -1,5 +1,9 @@
-export interface defaultTheme {
-  bgColor: string;
-  textColor: string;
-  accentColor: string;
+import "styled-components";
+
+declare module "styled-components" {
+  export interface DefaultTheme {
+    bgColor: string;
+    textColor: string;
+    accentColor: string;
+  }
 }
