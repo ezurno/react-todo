@@ -24,10 +24,19 @@ export const toDoSelector = selector({
   get: ({ get }) => {
     // get은 object의 .get 함수
     const toDos = get(toDoState);
-    return [
-      toDos.filter((toDo) => toDo.category === "TODO"),
-      toDos.filter((toDo) => toDo.category === "DOING"),
-      toDos.filter((toDo) => toDo.category === "DONE"),
-    ];
+    const category = get(categoryState);
+
+    // if (category === "TODO")
+    //   return toDos.filter((toDo) => toDo.category === "TODO");
+    // if (category === "DOING")
+    //   return toDos.filter((toDo) => toDo.category === "DOING");
+    // if (category === "DONE")
+    //   return toDos.filter((toDo) => toDo.category === "DONE");
+    return toDos.filter((toDo) => toDo.category === category);
   },
+});
+
+export const categoryState = atom({
+  key: "category",
+  default: "TODO",
 });
