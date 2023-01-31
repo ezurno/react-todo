@@ -1,48 +1,24 @@
 import { atom, selector } from "recoil";
 
-export enum Categories {
-  "TODO" = "TODO",
-  "DOING" = "DOING",
-  "DONE" = "DONE",
-}
-
-export interface IToDo {
-  // 그냥 쓰면 toDoState의 default가 type이 정의가 안되어서 never type이기 때문에 type을 정해주기 위해 사용
-  text: string;
-  id: number;
-  category: Categories;
-}
-
-export interface IForm {
-  toDo: string;
-}
-
-export const toDoState = atom<IToDo[]>({
-  key: "toDo",
-  default: [],
+export const minuteState = atom({
+  key: "minutes",
+  default: 0,
 });
 
-/**
- * selector로 toDoState를 가져와 새 배열을 만들지만 수정은 하지 않는 의존적이지만 동적인 함수
- */
-export const toDoSelector = selector({
-  key: "toDoSelector",
+export const hourSelector = selector<number>({
+  key: "hours",
   get: ({ get }) => {
-    // get은 object의 .get 함수
-    const toDos = get(toDoState);
-    const category = get(categoryState);
-
-    // if (category === "TODO")
-    //   return toDos.filter((toDo) => toDo.category === "TODO");
-    // if (category === "DOING")
-    //   return toDos.filter((toDo) => toDo.category === "DOING");
-    // if (category === "DONE")
-    //   return toDos.filter((toDo) => toDo.category === "DONE");
-    return toDos.filter((toDo) => toDo.category === category);
+    const minute = get(minuteState);
+    return minute / 60;
   },
-});
 
-export const categoryState = atom<Categories>({
-  key: "category",
-  default: Categories.TODO,
+  /**
+   *
+   *  set은 State 값을 수정해주기 위해 사용
+   * @param newValue 값을 수정한 값을 arg로 지정해 주어야 함 default type이 any 이므로 Number로 수정
+   */
+  set: ({ set }, newValue) => {
+    const minute = Number(newValue) * 60;
+    set(minuteState, minute);
+  },
 });
