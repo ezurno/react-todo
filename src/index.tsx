@@ -61,7 +61,7 @@ html, body, div, span, applet, object, iframe,
   body {
     font-family: 'Source Sans Pro', sans-serif;
     background-color: ${(props) => props.theme.bgColor};
-    color: ${(props) => props.theme.textColor};
+    color: black;
 
   }
 
