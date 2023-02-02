@@ -1,22 +1,26 @@
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
-
+import { toDoState } from "./Atoms";
 const Wrapper = styled.div`
   display: flex;
   max-width: 480px;
   width: 100%;
-  height: 100vh;
   margin: 0 auto;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 `;
-
 const Boards = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(1, 1fr);
 `;
-
 const Board = styled.div`
   padding: 20px 10px;
   padding-top: 30px;
@@ -24,7 +28,6 @@ const Board = styled.div`
   border-radius: 5px;
   min-height: 200px;
 `;
-
 const Card = styled.div`
   border-radius: 5px;
   margin-bottom: 5px;
@@ -32,10 +35,26 @@ const Card = styled.div`
   background-color: ${(props) => props.theme.cardColor};
 `;
 
-const testToDos = ["it", "just", "test", "to-do", "yeah", "!!!"];
-
 function App() {
-  const onDragEnd = () => {};
+  const [toDos, setToDos] = useRecoilState(toDoState);
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    if (destination?.index === undefined) return; // 목적지가 없으면 실행 x
+
+    setToDos((oldToDos) => {
+      const toDosCopy = [...oldToDos];
+      // 1) Delete item on source.index
+      console.log("Delete item on", source.index);
+      console.log(toDosCopy);
+      toDosCopy.splice(source.index, 1); // splice로 index의 위치에서 1개의 index를 추출
+      console.log("Deleted item");
+      console.log(toDosCopy);
+      // 2) Put back the item on the destination.index
+      console.log("Put back", draggableId, "on ", destination.index);
+      toDosCopy.splice(destination.index, 0, draggableId); // splice로 index의 위치에서 수정하지 않고 draggableId를 주입
+      console.log(toDosCopy);
+      return toDosCopy;
+    });
+  };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Wrapper>
@@ -43,8 +62,8 @@ function App() {
           <Droppable droppableId="one">
             {(magic) => (
               <Board ref={magic.innerRef} {...magic.droppableProps}>
-                {testToDos.map((toDo, index) => (
-                  <Draggable draggableId={toDo} index={index}>
+                {toDos.map((toDo, index) => (
+                  <Draggable key={toDo} draggableId={toDo} index={index}>
                     {(magic) => (
                       <Card
                         ref={magic.innerRef}
@@ -65,5 +84,4 @@ function App() {
     </DragDropContext>
   );
 }
-
 export default App;
