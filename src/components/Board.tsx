@@ -1,3 +1,4 @@
+import React from "react";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
@@ -10,6 +11,13 @@ const Wrapper = styled.div`
   min-height: 200px;
 `;
 
+const Title = styled.h1`
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 12px;
+  font-weight: bold;
+`;
+
 interface IBoardProps {
   toDos: string[];
   boardId: string;
@@ -17,17 +25,20 @@ interface IBoardProps {
 
 function Board({ toDos, boardId }: IBoardProps) {
   return (
-    <Droppable droppableId={boardId}>
-      {(magic) => (
-        <Wrapper ref={magic.innerRef} {...magic.droppableProps}>
-          {toDos.map((toDo, index) => (
-            <DraggableCard toDo={toDo} index={index} key={toDo} />
-          ))}
-          {magic.placeholder}
-        </Wrapper>
-      )}
-    </Droppable>
+    <Wrapper>
+      <Title>{boardId}</Title>
+      <Droppable droppableId={boardId}>
+        {(magic) => (
+          <div ref={magic.innerRef} {...magic.droppableProps}>
+            {toDos.map((toDo, index) => (
+              <DraggableCard toDo={toDo} index={index} key={toDo} />
+            ))}
+            {magic.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </Wrapper>
   );
 }
 
-export default Board;
+export default React.memo(Board);

@@ -1,14 +1,8 @@
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./Atoms";
 import Board from "./components/Board";
-import DraggableCard from "./components/DraggableCard";
 const Wrapper = styled.div`
   display: flex;
   max-width: 960px;
@@ -27,23 +21,20 @@ const Boards = styled.div`
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    if (destination?.index === undefined) return; // 목적지가 없으면 실행 x
-
-    // setToDos((oldToDos) => {
-    //   const toDosCopy = [...oldToDos];
-    //   // 1) Delete item on source.index
-    //   console.log("Delete item on", source.index);
-    //   console.log(toDosCopy);
-    //   toDosCopy.splice(source.index, 1); // splice로 index의 위치에서 1개의 index를 추출
-    //   console.log("Deleted item");
-    //   console.log(toDosCopy);
-    //   // 2) Put back the item on the destination.index
-    //   console.log("Put back", draggableId, "on ", destination.index);
-    //   toDosCopy.splice(destination.index, 0, draggableId); // splice로 index의 위치에서 수정하지 않고 draggableId를 주입
-    //   console.log(toDosCopy);
-    //   return toDosCopy;
-    // });
+  const onDragEnd = (info: DropResult) => {
+    const { draggableId, destination, source } = info;
+    if (destination?.droppableId === source.droppableId) {
+      // same board movement
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]];
+        boardCopy.splice(source.index, 1);
+        boardCopy.splice(destination?.index, 0, draggableId);
+        return {
+          ...allBoards,
+          [source.droppableId]: boardCopy,
+        };
+      });
+    }
   };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
