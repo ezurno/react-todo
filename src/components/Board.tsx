@@ -9,6 +9,8 @@ const Wrapper = styled.div`
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
   min-height: 200px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Title = styled.h1`
@@ -17,6 +19,19 @@ const Title = styled.h1`
   font-size: 12px;
   font-weight: bold;
 `;
+
+const Area = styled.div<IAreaProps>`
+  padding: 5px;
+  background-color: ${(props) =>
+    props.isDraggingOver ? "pink" : props.isDraggingFromthis ? "red" : "blue"};
+  flex-grow: 1;
+  transition: background-color 0.5s ease-in-out;
+`;
+
+interface IAreaProps {
+  isDraggingOver: boolean;
+  isDraggingFromthis: boolean;
+}
 
 interface IBoardProps {
   toDos: string[];
@@ -28,13 +43,21 @@ function Board({ toDos, boardId }: IBoardProps) {
     <Wrapper>
       <Title>{boardId}</Title>
       <Droppable droppableId={boardId}>
-        {(magic) => (
-          <div ref={magic.innerRef} {...magic.droppableProps}>
+        {(
+          magic,
+          snapshot // snapshot args는 드래그가 됐는지 boolean type으로 값을 받음 (우클릭 후 형식 정의)
+        ) => (
+          <Area
+            isDraggingOver={snapshot.isDraggingOver}
+            isDraggingFromthis={Boolean(snapshot.draggingFromThisWith)}
+            ref={magic.innerRef}
+            {...magic.droppableProps}
+          >
             {toDos.map((toDo, index) => (
               <DraggableCard toDo={toDo} index={index} key={toDo} />
             ))}
             {magic.placeholder}
-          </div>
+          </Area>
         )}
       </Droppable>
     </Wrapper>
