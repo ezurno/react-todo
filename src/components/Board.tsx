@@ -4,26 +4,29 @@ import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
 
 const Wrapper = styled.div`
-  padding: 20px 10px;
-  padding-top: 30px;
+  padding-top: 10px;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
-  min-height: 200px;
+  min-height: 360px;
   display: flex;
   flex-direction: column;
 `;
 
 const Title = styled.h1`
+  margin-bottom: 10px;
   text-align: center;
-  margin-bottom: 24px;
   font-size: 12px;
   font-weight: bold;
 `;
 
 const Area = styled.div<IAreaProps>`
-  padding: 5px;
+  padding: 20px;
   background-color: ${(props) =>
-    props.isDraggingOver ? "pink" : props.isDraggingFromthis ? "red" : "blue"};
+    props.isDraggingOver
+      ? "#dfe6e9"
+      : props.isDraggingFromthis
+      ? "#b2bec3"
+      : "transparent"};
   flex-grow: 1;
   transition: background-color 0.5s ease-in-out;
 `;
