@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
@@ -42,9 +42,18 @@ interface IBoardProps {
 }
 
 function Board({ toDos, boardId }: IBoardProps) {
+  const inputRef = useRef<HTMLInputElement>(null); //useRef 지정 시 type을 알려줘야 함
+  const onClick = () => {
+    inputRef.current?.focus(); // ref 지정 된 것을 focus() 해줌
+    setTimeout(() => {
+      inputRef.current?.blur(); // blur 로 5초후에 focus() 꺼짐
+    }, 5000);
+  };
   return (
     <Wrapper>
       <Title>{boardId}</Title>
+      <input ref={inputRef} placeholder="grab me" />
+      <button onClick={onClick}>click me</button>
       <Droppable droppableId={boardId}>
         {(
           magic,
@@ -53,7 +62,7 @@ function Board({ toDos, boardId }: IBoardProps) {
           <Area
             isDraggingOver={snapshot.isDraggingOver}
             isDraggingFromthis={Boolean(snapshot.draggingFromThisWith)}
-            ref={magic.innerRef}
+            ref={magic.innerRef} // ref는 react 코드를 이용해 html 요소를 지정하고 가져올 수 있음 (주소지정)
             {...magic.droppableProps}
           >
             {toDos.map((toDo, index) => (
