@@ -1,6 +1,9 @@
 import React, { useRef } from "react";
 import { Droppable } from "react-beautiful-dnd";
+import { useForm } from "react-hook-form";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { IToDo, toDoState } from "../Atoms";
 import DraggableCard from "./DraggableCard";
 
 const Wrapper = styled.div`
@@ -37,23 +40,48 @@ interface IAreaProps {
 }
 
 interface IBoardProps {
-  toDos: string[];
+  toDos: IToDo[];
   boardId: string;
 }
 
+interface IForm {
+  toDo: string;
+}
+
+const Form = styled.form`
+  width: 100%;
+  input {
+    width: 100%;
+  }
+`;
+
 function Board({ toDos, boardId }: IBoardProps) {
-  const inputRef = useRef<HTMLInputElement>(null); //useRef 지정 시 type을 알려줘야 함
-  const onClick = () => {
-    inputRef.current?.focus(); // ref 지정 된 것을 focus() 해줌
-    setTimeout(() => {
-      inputRef.current?.blur(); // blur 로 5초후에 focus() 꺼짐
-    }, 5000);
+  const setToDos = useSetRecoilState(toDoState);
+  const { register, setValue, handleSubmit } = useForm<IForm>();
+  const onValid = ({ toDo }: IForm) => {
+    const newToDo = {
+      id: Date.now(),
+      text: toDo,
+    };
+
+    setToDos((allBoards) => {
+      return {
+        ...allBoards,
+        [boardId]: [...allBoards[boardId], newToDo],
+      };
+    });
+    setValue("toDo", "");
   };
   return (
     <Wrapper>
       <Title>{boardId}</Title>
-      <input ref={inputRef} placeholder="grab me" />
-      <button onClick={onClick}>click me</button>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register("toDo", { required: true })}
+          type="text"
+          placeholder={`add task on ${boardId}`}
+        />
+      </Form>
       <Droppable droppableId={boardId}>
         {(
           magic,
@@ -66,7 +94,12 @@ function Board({ toDos, boardId }: IBoardProps) {
             {...magic.droppableProps}
           >
             {toDos.map((toDo, index) => (
-              <DraggableCard toDo={toDo} index={index} key={toDo} />
+              <DraggableCard
+                toDoId={toDo.id}
+                toDoText={toDo.text}
+                index={index}
+                key={toDo.id}
+              />
             ))}
             {magic.placeholder}
           </Area>

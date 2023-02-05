@@ -1,7 +1,7 @@
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState } from "./Atoms";
+import { IToDo, toDoState } from "./Atoms";
 import Board from "./components/Board";
 const Wrapper = styled.div`
   display: flex;
@@ -28,8 +28,9 @@ function App() {
       // same board movement
       setToDos((allBoards) => {
         const boardCopy = [...allBoards[source.droppableId]];
+        const taskObject = boardCopy[source.index]; // object로 만들었기 떄문에 따로 잡아서 두는 것
         boardCopy.splice(source.index, 1);
-        boardCopy.splice(destination?.index, 0, draggableId);
+        boardCopy.splice(destination?.index, 0, taskObject);
         return {
           ...allBoards,
           [source.droppableId]: boardCopy,
@@ -41,8 +42,10 @@ function App() {
       setToDos((allBoards) => {
         const sourceBoard = [...allBoards[source.droppableId]];
         const destinationBoard = [...allBoards[destination.droppableId]];
+        const taskObject = sourceBoard[source.index];
+
         sourceBoard.splice(source.index, 1);
-        destinationBoard.splice(destination.index, 0, draggableId);
+        destinationBoard.splice(destination.index, 0, taskObject);
         return {
           ...allBoards,
           [source.droppableId]: sourceBoard,
