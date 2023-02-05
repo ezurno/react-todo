@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { IToDo, toDoState } from "./Atoms";
 import Board from "./components/Board";
+import Header from "./components/Header";
 const Wrapper = styled.div`
   display: flex;
   max-width: 960px;
@@ -10,12 +11,12 @@ const Wrapper = styled.div`
   margin: 0 auto;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: auto;
 `;
 const Boards = styled.div`
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 `;
 
@@ -55,15 +56,18 @@ function App() {
     }
   };
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Wrapper>
-        <Boards>
-          {Object.keys(toDos).map((boardId) => (
-            <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
-          ))}
-        </Boards>
-      </Wrapper>
-    </DragDropContext>
+    <>
+      <Header />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Wrapper>
+          <Boards>
+            {Object.keys(toDos).map((boardId) => (
+              <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
+            ))}
+          </Boards>
+        </Wrapper>
+      </DragDropContext>
+    </>
   );
 }
 export default App;

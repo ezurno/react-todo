@@ -7,10 +7,13 @@ import { IToDo, toDoState } from "../Atoms";
 import DraggableCard from "./DraggableCard";
 
 const Wrapper = styled.div`
+  border: 5px solid black;
+
   padding-top: 10px;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
-  min-height: 360px;
+  min-height: 480px;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
 `;
@@ -52,6 +55,18 @@ const Form = styled.form`
   width: 100%;
   input {
     width: 100%;
+    border: none;
+    background-color: black;
+    height: 36px;
+    text-align: center;
+    transition: background-color 0.3s ease-in-out;
+    :hover {
+      background-color: gray;
+      color: white;
+    }
+    ::placeholder {
+      color: gray;
+    }
   }
 `;
 
