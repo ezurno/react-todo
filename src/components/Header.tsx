@@ -39,6 +39,18 @@ const PopUpMenu = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  display: flex;
+  flex-direction: column;
+`;
+
+const PopUpExit = styled.div`
+  width: 100%;
+  button {
+    float: right;
+    background-color: inherit;
+    border: none;
+    margin-right: 15px;
+  }
 `;
 
 const PopUpForm = styled.form`
@@ -70,19 +82,24 @@ interface IPopUp {
   popUp: boolean;
 }
 
+interface IAddBoard {
+  addBoard: string;
+}
+
 const Option = styled.div``;
 
 function Header() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const [popUp, setPopUp] = useRecoilState(popUpState);
+  const { register, setValue, handleSubmit } = useForm<IAddBoard>();
 
-  const addBoard = () => {
+  const addBoard = ({ addBoard }: IAddBoard) => {
     setToDos((allBoards) => {
-      return {
-        ...allBoards,
-        boardName: [],
-      };
+      const newBoards = { ...allBoards, [addBoard]: [] };
+      return newBoards;
     });
+    setValue("addBoard", "");
+    setPopUp((current) => !current);
   };
 
   const popUpAdd = () => {
@@ -93,12 +110,19 @@ function Header() {
     <Container>
       <PopUp popUp={popUp}>
         <PopUpMenu>
-          <PopUpForm>
+          <PopUpExit onClick={popUpAdd}>
+            <button>X</button>
+          </PopUpExit>
+
+          <PopUpForm onSubmit={handleSubmit(addBoard)}>
             <h1>Add your board name</h1>
-            <input placeholder="board name"></input>
+            <input
+              {...register("addBoard", { required: true })}
+              type="text"
+              placeholder="board name"
+            ></input>
             <PopUpButton>
               <button>SAVE</button>
-              <button onClick={popUpAdd}>EXIT</button>
             </PopUpButton>
           </PopUpForm>
         </PopUpMenu>
