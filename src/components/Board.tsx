@@ -70,6 +70,17 @@ const Form = styled.form`
   }
 `;
 
+const Buttons = styled.div`
+  padding: 0 5px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    :hover {
+      cursor: pointer;
+    }
+  }
+`;
+
 function Board({ toDos, boardId }: IBoardProps) {
   const setToDos = useSetRecoilState(toDoState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
@@ -89,6 +100,10 @@ function Board({ toDos, boardId }: IBoardProps) {
   };
   return (
     <Wrapper>
+      <Buttons>
+        <span className="material-symbols-outlined">update</span>
+        <span className="material-symbols-outlined">delete</span>
+      </Buttons>
       <Title>{boardId}</Title>
       <Form onSubmit={handleSubmit(onValid)}>
         <input

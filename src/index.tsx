@@ -62,7 +62,9 @@ html, body, div, span, applet, object, iframe,
     font-family: 'Source Sans Pro', sans-serif;
     background-color: ${(props) => props.theme.bgColor};
     color: black;
-
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
   }
 
   a {

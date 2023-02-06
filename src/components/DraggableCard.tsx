@@ -10,13 +10,25 @@ const Card = styled.div<{ isDragging: boolean }>`
     props.isDragging ? "#74b9ff" : props.theme.cardColor};
   box-shadow: ${(props) =>
     props.isDragging ? "0px 2px 5px rgba(0,0,0,0.5)" : "none"};
-`;
 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 interface IDraggableCardProps {
   toDoId: number;
   toDoText: string;
   index: number;
 }
+
+const Buttons = styled.div`
+  display: flex;
+  span {
+    :hover {
+      cursor: pointer;
+    }
+  }
+`;
 
 function DraggableCard({ toDoText, toDoId, index }: IDraggableCardProps) {
   return (
@@ -32,10 +44,13 @@ function DraggableCard({ toDoText, toDoId, index }: IDraggableCardProps) {
           {...magic.draggableProps}
         >
           {toDoText}
+          <Buttons>
+            <span className="material-symbols-outlined">update</span>
+            <span className="material-symbols-outlined">delete</span>
+          </Buttons>
         </Card>
       )}
     </Draggable>
   );
 }
-
 export default React.memo(DraggableCard);
