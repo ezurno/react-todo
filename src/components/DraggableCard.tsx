@@ -1,6 +1,8 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { toDoState } from "../Atoms";
 
 const Card = styled.div<{ isDragging: boolean }>`
   border-radius: 5px;
@@ -19,6 +21,7 @@ interface IDraggableCardProps {
   toDoId: number;
   toDoText: string;
   index: number;
+  boardId: string;
 }
 
 const Buttons = styled.div`
@@ -30,7 +33,27 @@ const Buttons = styled.div`
   }
 `;
 
-function DraggableCard({ toDoText, toDoId, index }: IDraggableCardProps) {
+function DraggableCard({
+  toDoText,
+  toDoId,
+  index,
+  boardId,
+}: IDraggableCardProps) {
+  const setToDos = useSetRecoilState(toDoState);
+  const onDelCard = () => {
+    console.log("DEL: ", boardId, index);
+    setToDos((allBoards) => {
+      const newBoard = [
+        ...allBoards[boardId].slice(0, index),
+        ...allBoards[boardId].slice(index + 1),
+      ];
+      return {
+        ...allBoards,
+        [boardId]: newBoard,
+      };
+    });
+  };
+
   return (
     <Draggable key={toDoId} draggableId={toDoId.toString()} index={index}>
       {(
@@ -46,7 +69,9 @@ function DraggableCard({ toDoText, toDoId, index }: IDraggableCardProps) {
           {toDoText}
           <Buttons>
             <span className="material-symbols-outlined">update</span>
-            <span className="material-symbols-outlined">delete</span>
+            <span className="material-symbols-outlined" onClick={onDelCard}>
+              delete
+            </span>
           </Buttons>
         </Card>
       )}
