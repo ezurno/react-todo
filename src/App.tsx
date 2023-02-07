@@ -1,7 +1,7 @@
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { IToDo, toDoState } from "./Atoms";
+import { boardState, IToDo, toDoState } from "./Atoms";
 import Board from "./components/Board";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   align-items: center;
   height: auto;
 `;
-const Boards = styled.div`
+const Boards = styled.div<IBoardsProps>`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(4, 1fr);
@@ -23,12 +23,25 @@ const Boards = styled.div`
 
 const Body = styled.div``;
 
+interface IBoardsProps {
+  isDraggingOver: boolean;
+  isDraggingFromthis: boolean;
+}
+
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
+  const [boards, setBoards] = useRecoilState(boardState);
   const onDragEnd = (info: DropResult) => {
     const { draggableId, destination, source } = info;
     if (!destination) return;
-    if (destination?.droppableId === source.droppableId) {
+    else if (source.droppableId === "boards") {
+      setBoards((prev) => {
+        const boardCopy = [...prev];
+        const item = boardCopy.splice(source.index, 1)[0];
+        boardCopy.splice(destination.index, 0, item);
+        return boardCopy;
+      });
+    } else if (destination?.droppableId === source.droppableId) {
       // same board movement
       setToDos((allBoards) => {
         const boardCopy = [...allBoards[source.droppableId]];
@@ -40,8 +53,7 @@ function App() {
           [source.droppableId]: boardCopy,
         };
       });
-    }
-    if (destination.droppableId !== source.droppableId) {
+    } else if (destination.droppableId !== source.droppableId) {
       //cross data
       setToDos((allBoards) => {
         const sourceBoard = [...allBoards[source.droppableId]];
@@ -64,11 +76,26 @@ function App() {
       <Body>
         <DragDropContext onDragEnd={onDragEnd}>
           <Wrapper>
-            <Boards>
-              {Object.keys(toDos).map((boardId) => (
-                <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
-              ))}
-            </Boards>
+            <Droppable droppableId="boards" direction="horizontal" type="board">
+              {(magic, snapshot) => (
+                <Boards
+                  isDraggingOver={snapshot.isDraggingOver}
+                  isDraggingFromthis={Boolean(snapshot.draggingFromThisWith)}
+                  ref={magic.innerRef} // ref는 react 코드를 이용해 html 요소를 지정하고 가져올 수 있음 (주소지정)
+                  {...magic.droppableProps}
+                >
+                  {boards.map((boardId, index) => (
+                    <Board
+                      boardId={boardId}
+                      key={index}
+                      toDos={toDos[boardId]}
+                      index={index}
+                    />
+                  ))}
+                  {magic.placeholder}
+                </Boards>
+              )}
+            </Droppable>
           </Wrapper>
         </DragDropContext>
       </Body>

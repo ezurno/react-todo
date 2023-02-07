@@ -1,12 +1,12 @@
 import React, { useRef } from "react";
-import { Droppable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { IToDo, toDoState } from "../Atoms";
 import DraggableCard from "./DraggableCard";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isDragging: boolean }>`
   border: 5px solid black;
 
   padding-top: 10px;
@@ -45,6 +45,7 @@ interface IAreaProps {
 interface IBoardProps {
   toDos: IToDo[];
   boardId: string;
+  index: number;
 }
 
 interface IForm {
@@ -81,7 +82,7 @@ const Buttons = styled.div`
   }
 `;
 
-function Board({ toDos, boardId }: IBoardProps) {
+function Board({ toDos, boardId, index }: IBoardProps) {
   const setToDos = useSetRecoilState(toDoState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
   const onValid = ({ toDo }: IForm) => {
@@ -99,44 +100,53 @@ function Board({ toDos, boardId }: IBoardProps) {
     setValue("toDo", "");
   };
   return (
-    <Wrapper>
-      <Buttons>
-        <span className="material-symbols-outlined">update</span>
-        <span className="material-symbols-outlined">delete</span>
-      </Buttons>
-      <Title>{boardId}</Title>
-      <Form onSubmit={handleSubmit(onValid)}>
-        <input
-          {...register("toDo", { required: true })}
-          type="text"
-          placeholder={`add task on ${boardId}`}
-        />
-      </Form>
-      <Droppable droppableId={boardId}>
-        {(
-          magic,
-          snapshot // snapshot args는 드래그가 됐는지 boolean type으로 값을 받음 (우클릭 후 형식 정의)
-        ) => (
-          <Area
-            isDraggingOver={snapshot.isDraggingOver}
-            isDraggingFromthis={Boolean(snapshot.draggingFromThisWith)}
-            ref={magic.innerRef} // ref는 react 코드를 이용해 html 요소를 지정하고 가져올 수 있음 (주소지정)
-            {...magic.droppableProps}
-          >
-            {toDos.map((toDo, index) => (
-              <DraggableCard
-                toDoId={toDo.id}
-                toDoText={toDo.text}
-                index={index}
-                boardId={boardId}
-                key={toDo.id}
-              />
-            ))}
-            {magic.placeholder}
-          </Area>
-        )}
-      </Droppable>
-    </Wrapper>
+    <Draggable draggableId={boardId} index={index} key={boardId}>
+      {(magic, snapshot) => (
+        <Wrapper
+          isDragging={snapshot.isDragging}
+          ref={magic.innerRef}
+          {...magic.dragHandleProps}
+          {...magic.draggableProps}
+        >
+          <Buttons>
+            <span className="material-symbols-outlined">update</span>
+            <span className="material-symbols-outlined">delete</span>
+          </Buttons>
+          <Title>{boardId}</Title>
+          <Form onSubmit={handleSubmit(onValid)}>
+            <input
+              {...register("toDo", { required: true })}
+              type="text"
+              placeholder={`add task on ${boardId}`}
+            />
+          </Form>
+          <Droppable droppableId={boardId}>
+            {(
+              magic,
+              snapshot // snapshot args는 드래그가 됐는지 boolean type으로 값을 받음 (우클릭 후 형식 정의)
+            ) => (
+              <Area
+                isDraggingOver={snapshot.isDraggingOver}
+                isDraggingFromthis={Boolean(snapshot.draggingFromThisWith)}
+                ref={magic.innerRef} // ref는 react 코드를 이용해 html 요소를 지정하고 가져올 수 있음 (주소지정)
+                {...magic.droppableProps}
+              >
+                {toDos.map((toDo, index) => (
+                  <DraggableCard
+                    toDoId={toDo.id}
+                    toDoText={toDo.text}
+                    index={index}
+                    boardId={boardId}
+                    key={toDo.id}
+                  />
+                ))}
+                {magic.placeholder}
+              </Area>
+            )}
+          </Droppable>
+        </Wrapper>
+      )}
+    </Draggable>
   );
 }
 

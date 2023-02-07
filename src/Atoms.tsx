@@ -22,3 +22,8 @@ export const popUpState = atom({
   key: "popUp",
   default: false,
 });
+
+export const boardState = atom<string[]>({
+  key: "boards",
+  default: ["To Do", "Doing", "Done"],
+});
