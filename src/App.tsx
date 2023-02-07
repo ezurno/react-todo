@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 const Wrapper = styled.div`
   display: flex;
-  max-width: 960px;
+  max-width: 720px;
   width: 100%;
   margin: 0 auto;
   justify-content: center;
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 const Boards = styled.div<IBoardsProps>`
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
 `;
 
