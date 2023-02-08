@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import logo from "../img/Trellee.png";
 
 const Container = styled.div`
   height: 10vh;
@@ -19,7 +20,7 @@ function Header() {
   return (
     <Container>
       <HeadLine>
-        <h1>LEE TRELLO</h1>
+        <img src={logo} alt={logo} />
         {/* <Option>
           <button onClick={popUpAdd}>추가</button>
         </Option> */}
