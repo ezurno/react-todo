@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { popUpState, toDoState } from "../Atoms";
 
 const Container = styled.div`
-  height: 80px;
+  height: 10vh;
   background-color: red;
 `;
 

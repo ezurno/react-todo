@@ -7,12 +7,12 @@ import { IToDo, toDoState } from "../Atoms";
 import DraggableCard from "./DraggableCard";
 
 const Wrapper = styled.div<{ isDragging: boolean }>`
-  border: 5px solid black;
+  border: 0.5vh solid black;
 
-  padding-top: 10px;
+  margin: 4vh 0;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
-  min-height: 480px;
+  min-height: 70vh;
   min-width: 200px;
   display: flex;
   flex-direction: column;
