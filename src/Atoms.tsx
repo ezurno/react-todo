@@ -33,3 +33,11 @@ export const boardState = atom<string[]>({
   key: "boards",
   default: ["하는 중", "해야 할 일", "완 료"],
 });
+
+export const cardChanger = atom({
+  key: "changer",
+  default: {
+    boardId: "",
+    index: 0,
+  },
+});

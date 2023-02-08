@@ -1,8 +1,8 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState } from "../Atoms";
+import { cardChanger, popUpState, toDoState } from "../Atoms";
 
 const Card = styled.div<{ isDragging: boolean }>`
   border-radius: 5px;
@@ -42,6 +42,9 @@ function DraggableCard({
   boardId,
 }: IDraggableCardProps) {
   const setToDos = useSetRecoilState(toDoState);
+  const [popUp, setPopUp] = useRecoilState(popUpState);
+  const [cardChange, setCardChange] = useRecoilState(cardChanger);
+
   const onDelCard = () => {
     console.log("DEL: ", boardId, index);
     setToDos((allBoards) => {
@@ -54,6 +57,13 @@ function DraggableCard({
         [boardId]: newBoard,
       };
     });
+  };
+
+  const onUpdateCard = () => {
+    console.log(cardChange);
+    console.log(index, toDoId);
+    setPopUp((current) => !current);
+    setCardChange({ boardId, index });
   };
 
   return (
@@ -70,7 +80,9 @@ function DraggableCard({
         >
           {toDoText}
           <Buttons>
-            <span className="material-symbols-outlined">update</span>
+            <span className="material-symbols-outlined" onClick={onUpdateCard}>
+              update
+            </span>
             <span className="material-symbols-outlined" onClick={onDelCard}>
               delete
             </span>

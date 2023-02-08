@@ -5,6 +5,7 @@ import { boardState, IToDo, toDoState } from "./Atoms";
 import Board from "./components/Board";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import PopUpTool from "./components/PopUpTool";
 const Wrapper = styled.div`
   display: flex;
   max-width: 720px;
@@ -72,6 +73,8 @@ function App() {
   };
   return (
     <>
+      <PopUpTool />
+
       <Header />
       <Body>
         <DragDropContext onDragEnd={onDragEnd}>
