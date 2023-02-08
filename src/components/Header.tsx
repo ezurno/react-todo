@@ -6,7 +6,8 @@ import { popUpState, toDoState } from "../Atoms";
 
 const Container = styled.div`
   height: 10vh;
-  background-color: red;
+  background-color: ${(props) => props.theme.boardColor};
+  color: ${(props) => props.theme.fontColor};
 `;
 
 const HeadLine = styled.div`
@@ -129,9 +130,9 @@ function Header() {
       </PopUp>
       <HeadLine>
         <h1>LEE TRELLO</h1>
-        <Option>
+        {/* <Option>
           <button onClick={popUpAdd}>추가</button>
-        </Option>
+        </Option> */}
       </HeadLine>
     </Container>
   );

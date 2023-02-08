@@ -7,11 +7,13 @@ import { IToDo, toDoState } from "../Atoms";
 import DraggableCard from "./DraggableCard";
 
 const Wrapper = styled.div<{ isDragging: boolean }>`
-  border: 0.5vh solid black;
+  border: 0.5vh solid ${(props) => props.theme.middleColor};
+  color: ${(props) => props.theme.fontColor};
 
+  padding-top: 15px;
   margin: 4vh 0;
   background-color: ${(props) => props.theme.boardColor};
-  border-radius: 5px;
+  border-radius: 20px;
   min-height: 70vh;
   min-width: 200px;
   display: flex;
@@ -21,7 +23,7 @@ const Wrapper = styled.div<{ isDragging: boolean }>`
 const Title = styled.h1`
   margin-bottom: 10px;
   text-align: center;
-  font-size: 12px;
+  font-size: 18px;
   font-weight: bold;
 `;
 
@@ -29,9 +31,9 @@ const Area = styled.div<IAreaProps>`
   padding: 20px;
   background-color: ${(props) =>
     props.isDraggingOver
-      ? "#dfe6e9"
+      ? props.theme.middleColor
       : props.isDraggingFromthis
-      ? "#b2bec3"
+      ? props.theme.middleColor
       : "transparent"};
   flex-grow: 1;
   transition: background-color 0.5s ease-in-out;
@@ -57,16 +59,20 @@ const Form = styled.form`
   input {
     width: 100%;
     border: none;
-    background-color: black;
+    background-color: ${(props) => props.theme.middleColor};
+    font-size: 15px;
+    font-weight: bold;
     height: 36px;
     text-align: center;
     transition: background-color 0.3s ease-in-out;
-    :hover {
-      background-color: gray;
-      color: white;
-    }
+    color: ${(props) => props.theme.fontColor};
     ::placeholder {
-      color: gray;
+      color: ${(props) => props.theme.cardColor};
+    }
+
+    :hover {
+      background-color: ${(props) => props.theme.boardColor};
+      color: ${(props) => props.theme.fontColor};
     }
   }
 `;
@@ -108,16 +114,12 @@ function Board({ toDos, boardId, index }: IBoardProps) {
           {...magic.dragHandleProps}
           {...magic.draggableProps}
         >
-          <Buttons>
-            <span className="material-symbols-outlined">update</span>
-            <span className="material-symbols-outlined">delete</span>
-          </Buttons>
           <Title>{boardId}</Title>
           <Form onSubmit={handleSubmit(onValid)}>
             <input
               {...register("toDo", { required: true })}
               type="text"
-              placeholder={`add task on ${boardId}`}
+              placeholder={`${boardId}에 작성`}
             />
           </Form>
           <Droppable droppableId={boardId}>

@@ -9,7 +9,9 @@ const Card = styled.div<{ isDragging: boolean }>`
   margin-bottom: 5px;
   padding: 10px 10px;
   background-color: ${(props) =>
-    props.isDragging ? "#74b9ff" : props.theme.cardColor};
+    props.isDragging ? props.theme.fontColor : props.theme.cardColor};
+  color: ${(props) =>
+    props.isDragging ? props.theme.boardColor : props.theme.fontColor};
   box-shadow: ${(props) =>
     props.isDragging ? "0px 2px 5px rgba(0,0,0,0.5)" : "none"};
 

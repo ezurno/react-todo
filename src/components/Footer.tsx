@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Container = styled.div`
   height: 12vh;
-  background-color: red;
+  background-color: ${(props) => props.theme.boardColor};
 `;
 
 function footer() {
